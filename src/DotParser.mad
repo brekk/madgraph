@@ -1,0 +1,513 @@
+// https://graphviz.org/doc/info/lang.html
+// https://www.ocf.berkeley.edu/~eek/index.html/tiny_examples/thinktank/src/gv1.7c/doc/dotguide.pdf
+
+import type { Color, SVGColor, X11Color } from "./Color"
+
+
+
+export type DotGraphMode = DotUndirectedGraph | DotDirectedGraph
+
+export type Layout
+  = LayoutDot
+  | LayoutNeato
+  | LayoutFdp
+  | LayoutSfdp
+  | LayoutCirco
+  | LayoutTwopi
+  | LayoutNop
+  | LayoutNop2
+  | LayoutOsage
+  | LayoutPatchwork
+
+export type DotChar = DotChar(Char)
+
+export type DotIdentifier = DotIdentifier(String)
+
+export type Layer = LayerAll | Layer(String) | LayerPort(String, String) | LayerList(Layer)
+
+export type Shape
+  = ShapeBox
+  | ShapePolygon
+  | ShapeEllipse
+  | ShapeOval
+  | ShapeCircle
+  | ShapePoint
+  | ShapeEgg
+  | ShapeTriangle
+  | ShapePlaintext
+  | ShapePlain
+  | ShapeDiamond
+  | ShapeTrapezium
+  | ShapeParallelogram
+  | ShapeHouse
+  | ShapePentagon
+  | ShapeHexagon
+  | ShapeSeptagon
+  | ShapeOctagon
+  | ShapeDoublecircle
+  | ShapeDoubleoctagon
+  | ShapeTripleoctagon
+  | ShapeInvtriangle
+  | ShapeInvtrapezium
+  | ShapeInvhouse
+  | ShapeMdiamond
+  | ShapeMsquare
+  | ShapeMcircle
+  | ShapeRect
+  | ShapeRectangle
+  | ShapeSquare
+  | ShapeStar
+  | ShapeNone
+  | ShapeUnderline
+  | ShapeCylinder
+  | ShapeNote
+  | ShapeTab
+  | ShapeFolder
+  | ShapeBox3d
+  | ShapeComponent
+  | ShapePromoter
+  | ShapeCds
+  | ShapeTerminator
+  | ShapeUtr
+  | ShapePrimersite
+  | ShapeRestrictionsite
+  | ShapeFivepoverhang
+  | ShapeThreepoverhang
+  | ShapeNoverhang
+  | ShapeAssembly
+  | ShapeSignature
+  | ShapeInsulator
+  | ShapeRibosite
+  | ShapeRnastab
+  | ShapeProteasesite
+  | ShapeProteinstab
+  | ShapeRpromoter
+  | ShapeRarrow
+  | ShapeLarrow
+  | ShapeLpromoter
+
+export type EdgeStyle = EdgeDashed | EdgeDotted | EdgeSolid | EdgeInvisible | EdgeBold | EdgeTapered
+
+export type NodeStyle
+  = NodeDashed
+  | NodeDotted
+  | NodeSolid
+  | NodeInvisible
+  | NodeBold
+  | NodeFilled
+  | NodeWedged
+  | NodeDiagonal
+  | NodeRounded
+
+export type ClusterStyle = ClusterFilled | ClusterStriped | ClusterRounded
+
+export type FixedSize = FixedSizeBoolean(Boolean) | FixedSizeShape(Shape)
+
+export type ImagePos
+  = IPTopLeft
+  | IPTopCentered
+  | IPTopRight
+  | IPMiddleLeft
+  | IPMiddleCentered
+  | IPMiddleRight
+  | IPBottomLeft
+  | IPBottomCentered
+  | IPBottomRight
+
+export type ImageScale
+  = ImageScaleFalse
+  | ImageScaleTrue
+  | ImageScaleWidth
+  | ImageScaleHeight
+  | ImageScaleBoth
+
+export type LabelLoc = LabelLocTop | LabelLocCentered | LabelLocBottom
+
+export type Point = Point(Float, Float, Boolean)
+
+export type Rect = Rect(Point, Point)
+
+export type NodeAttribute
+  = NAClass(String)
+  | NAColor(Color)
+  | NAColorScheme(String)
+  | NAComment(String)
+  | NADistortion(Float)
+  | NAFillColor(Color)
+  | NAFixedSize(FixedSize)
+  | NAFontColor(Color)
+  | NAFontName(String)
+  | NAFontSize(Integer)
+  | NAGradientAngle(Integer)
+  | NAGroup(String)
+  | NAHeight(Float)
+  | NAHref(String)
+  | NAImage(String)
+  | NAImagePos(ImagePos)
+  | NAImageScale(ImageScale)
+  | NALabel(String)
+  | NALabelLoc(LabelLoc)
+  | NALayer(Layer)
+  | NAMargin(Float, Float)
+  | NANoJustify(Boolean)
+  | NAShape(Shape)
+  | NAShapeFile(String)
+  | NAShowBoxes(Integer)
+  | NASides(Integer)
+  | NASkew(Float)
+  | NASortV(Integer)
+  | NAStyle(NodeStyle)
+  | NATarget(String)
+  | NATooltip(String)
+  | NAUrl(String)
+  | NAVertices(List Point)
+  | NAWidth(Float)
+  | NAXLabel(String)
+  | NAExteriorLabelPosition(Point)
+
+export type EDirection = EForward | EBack | EBoth | ENone
+
+export type GraphClusterRank = GCLocal | GCGlobal | GCNone
+
+export type GraphOrdering = OrderingOut | OrderingIn
+
+export type GraphOrientation = GraphOrientationNamed(Boolean) | GraphOrientation(Float)
+
+export type RankType = RankSame | RankMin | RankSource | RankMax | RankSink
+
+export type RankDir = RankTopBottom | RankLeftRight | RankBottomTop | RankRightLeft
+
+export type GraphRatio = GRatio(Float) | GRatioFill | GRatioCompress | GRatioExpand | GRatioAuto
+
+// https://graphviz.org/docs/attr-types/point/
+export type GraphSize = GSize(Float) | GSizePoint(Point)
+
+export type Sep = AddDouble(Float) | AddPoint(Point)
+
+export type LabelScheme
+  = LabelSchemeCenter
+  | LabelSchemeOldCenter
+  | LabelSchemeStraighten
+  | LabelSchemeDefault
+
+export type Justification = JLeft | JCentered | JRight
+
+export type NeatoMode = NeatoMajor | NeatoKK | NeatoSGD | NeatoHier | NeatoIpsep
+
+export type SFDPMode = SFDPSpring | SFDPMaxEnt
+
+export type GraphMode = NeatoMode | SFDPMode
+
+export type NeatoModel = NeatoCircuit | NeatoSubset | NeatoMDS | NeatoShortpath
+
+export type OutputMode = BreadthFirst | NodesFirst | EdgesFirst
+
+export type Overlap
+  = OverlapBoolean(Boolean)
+  | OverlapScale
+  | OverlapPrism
+  | OverlapPrism0
+  | OverlapVoronoi
+  | OverlapScaleXY
+  | OverlapCompress
+  | OverlapNeatoIpSep
+  | OverlapPrefix(Integer)
+
+export type PackModeFlag = PackModeFlag(String)
+
+export type PackMode
+  = PackModeNode
+  | PackModeCluster
+  | PackModeGraph
+  | PackModeFlagged(PackModeFlag, Integer)
+
+export type GraphPad = GraphPad(Float) | GraphPadPoint(Point)
+
+export type PageDir
+  = PDBottomLeft
+  | PDBottomRight
+  | PDTopLeft
+  | PDTopRight
+  | PDRightBottom
+  | PDRightTop
+  | PDLeftBottom
+  | PDLeftTop
+
+export type QuadType = QuadNormal | QuadFast | QuadNone
+
+export type Root = RootBoolean(Boolean) | Root(String)
+
+export type Scale = ScalePoint(Point) | Scale(Float)
+
+export type SmoothType
+  = SmoothNone
+  | SmoothAvgDist
+  | SmoothGraphDist
+  | SmoothPowerDist
+  | SmoothRng
+  | SmoothSpring
+  | SmoothTriangle
+
+export type Splines
+  = SplinesLine
+  | SplinesSpline
+  | SplinesPolyline
+  | SplinesOrtho
+  | SplinesCurved
+  | SplinesNone
+
+export type StartType = StartTypeRegular | StartTypeSelf | StartTypeRandom
+
+export type GraphAttribute
+  = GABoundingBox(Rect)
+  | GABeautify(Boolean)
+  | GABgColor(Color)
+  | GACenter(Boolean)
+  | GACharset(String)
+  | GAClass(String)
+  | GAClusterRank(GraphClusterRank)
+  | GAColor(Color)
+  | GAColorScheme(String)
+  | GAComment(String)
+  | GACompound(Boolean)
+  | GAConcentrate(Boolean)
+  | GADamping(Float)
+  | GADefaultDist(Float)
+  | GADim(Integer)
+  | GADimen(Integer)
+  | GADirEdgeConstraints(Boolean)
+  | GADpi(Integer)
+  | GAESep(Sep)
+  | GAEpsilon(Float)
+  | GAFontColor(Color)
+  | GAFontName(String)
+  | GAFontNames(String)
+  | GAFontPath(String)
+  | GAFontSize(Integer)
+  | GAForceLabels(Boolean)
+  | GAGradientAngle(Integer)
+  | GAHref(String)
+  | GAId(String)
+  | GAImagePath(String)
+  | GAInputScale(Float)
+  | GAK(Float)
+  | GALHeight(Float)
+  | GALabel(String)
+  | GALabelJust(Justification)
+  | GALabelLoc(LabelLoc)
+  | GALabelScheme(LabelScheme)
+  | GALandscape(Boolean)
+  | GALayerListSep(Char)
+  | GALayerSelect(Layer)
+  | GALayerSep(Char)
+  | GALayerSeq(List String)
+  | GALayers(Layer)
+  | GALayout(Layout)
+  | GALevels(Integer)
+  | GALevelsGap(Float)
+  | GALineLength(Integer)
+  | GAMargin(Float, Float)
+  | GAMaxiter(Integer)
+  | GAMclimit(Float)
+  | GAMindist(Float)
+  | GAMode(GraphMode)
+  | GAModel(NeatoModel)
+  | GANewRank(Boolean)
+  | GANodeSep(Float)
+  | GANodesep(Float)
+  | GANojustify(Boolean)
+  | GANotranslate(Boolean)
+  | GANslimit(Integer)
+  | GAOneblock(Boolean)
+  | GAOrdering(GraphOrdering)
+  | GAOrientation(GraphOrientation)
+  | GAOutputOrder(OutputMode)
+  | GAOverlap(Overlap)
+  | GAOverlapScaling(Float)
+  | GAOverlapShrink(Boolean)
+  | GAPack(Boolean)
+  | GAPackMode(PackMode)
+  | GAPad(GraphPad)
+  | GAPage(Float, Float)
+  | GAPageDir(PageDir)
+  | GAQuadTree(QuadType)
+  | GAQuantum(Float)
+  | GARank(RankType)
+  | GARankDir(RankDir)
+  | GARankSep(Float)
+  | GARatio(GraphRatio)
+  | GARemincross(Boolean)
+  | GARepulsiveForce(Float)
+  | GARoot(Root)
+  | GARotate(Integer)
+  | GARotation(Integer)
+  | GAScale(Scale)
+  | GASearchSize(Integer)
+  | GASep(Sep)
+  | GAShowBoxes(Boolean)
+  | GASize(GraphSize)
+  | GASmoothing(SmoothType)
+  | GASortV(Integer)
+  | GASplines(Splines)
+  | GAStart(StartType)
+  | GAStyle(NodeStyle)
+  | GAStylesheet(String)
+  | GATarget(String)
+  | GATBtbalance(String)
+  | GATooltip(String)
+  | GATruecolor(Boolean)
+  | GAUrl(String)
+  | GAViewport(Point, Point, Point, Point)
+  | GAVoroMargin(Float)
+  | GAXdotversion(String)
+
+export type ClusterAttribute
+  = CAArea(Float)
+  | CABoundingBox(Rect)
+  | CABgColor(Color)
+  | CAClass(String)
+  | CACluster(Boolean)
+  | CAColor(Color)
+  | CAColorScheme(String)
+  | CAFillColor(Color)
+  | CAFontColor(Color)
+  | CAFontName(String)
+  | CAFontSize(Integer)
+  | CAGradientAngle(Integer)
+  | CAHref(String)
+  | CAId(String)
+  | CAK(Float)
+  | CALabel(String)
+  | CALabelJust(Justification)
+  | CALabelLoc(LabelLoc)
+  | CALayer(Layer)
+  | CALHeight(Float)
+  | CALp(Point)
+  | CALwidth(Float)
+  | CAMargin(Float, Float)
+  | CANojustify(Boolean)
+  | CAPenColor(Color)
+  | CAPenWidth(Float)
+  | CAPeripheries(Integer)
+  | CASortv(Integer)
+  | CAStyle(NodeStyle)
+  | CATarget(String)
+  | CATooltip(String)
+  | CAUrl(String)
+
+// https://graphviz.org/doc/info/arrows.html
+export type Arrowhead
+  = ArrowBox
+  | ArrowCrow
+  | ArrowCurve
+  | ArrowDiamond
+  | ArrowDot
+  | ArrowIcurve
+  | ArrowInv
+  | ArrowNone
+  | ArrowNormal
+  | ArrowTee
+  | ArrowVee
+
+export type ArrowSide = AClipLeft | AClipRight | NoSide
+
+// open - Boolean
+// side - ArrowSide
+// shape - Arrowhead
+export type ArrowShape = ArrowShape(Boolean, ArrowSide, Arrowhead)
+
+export type Arrow = Arrow(List ArrowShape)
+
+export type EdgePosition = EdgePoint(Point) | EdgeSpline(Splines)
+
+export type EdgeAttribute
+  = EAArrowHead(Arrow)
+  | EAArrowSize(Float)
+  | EAArrowTail(Arrow)
+  | EAClass(String)
+  | EAColor(Color)
+  | EAColorScheme(String)
+  | EAComment(String)
+  | EAConstraint(Boolean)
+  | EADecorate(Boolean)
+  | EADir(EDirection)
+  | EAEdgeTarget(String)
+  | EAEdgeTooltip(String)
+  | EAEdgeURL(String)
+  | EAFillColor(Color)
+  | EAFontColor(Color)
+  | EAFontName(String)
+  | EAFontSize(Integer)
+  | EAHeadLP(Point)
+  | EAHeadClip(Boolean)
+  | EAHeadLabel(String)
+  | EAHeadPort(Port)
+  | EAHeadTarget(String)
+  | EAHeadTooltip(String)
+  | EAHeadURL(String)
+  | EAId(String)
+  | EALabel(String)
+  | EALabelAngle(Float)
+  | EALabelDistance(Float)
+  | EALabelFloating(Boolean)
+  | EALabelFontColor(Color)
+  | EALabelFontName(String)
+  | EALabelFontSize(Integer)
+  | EALabelTarget(String)
+  | EALabelTooltip(String)
+  | EALabelURL(String)
+  | EALayer(Layer)
+  | EALen(Float)
+  | EALHead(String)
+  | EALp(Point)
+  | EALTail(String)
+  | EAMinlen(Integer)
+  | EANojustify(Boolean)
+  | EAPenWidth(Float)
+  | EAPos(EdgePosition)
+  | EASamehead(String)
+  | EASametail(String)
+  | EAShowBoxes(Boolean)
+  | EAStyle(EdgeStyle)
+  | EATailLP(Point)
+  | EATailClip(Boolean)
+  | EATailLabel(String)
+  | EATailPort(Port)
+  | EATailTarget(String)
+  | EATailTooltip(String)
+  | EATailURL(String)
+  | EATarget(String)
+  | EATooltip(String)
+  | EAURL(String)
+  | EAWeight(Float)
+  | EAXLabel(String)
+  | EAXlp(Point)
+
+// https://graphviz.org/docs/attr-types/portPos/ 
+export type Compass
+  = CompassN
+  | CompassNE
+  | CompassE
+  | CompassSE
+  | CompassS
+  | CompassSW
+  | CompassW
+  | CompassNW
+  | CompassC
+  | CompassGap
+
+export type Port = Port(String, Compass)
+
+export type Node = Node(String, List NodeAttribute)
+export type Edge = Edge(String, List EdgeAttribute)
+
+export type Subgraph = Subgraph(String, List GraphAttribute)
+
+// graph
+// - strict: Boolean
+// - mode: graph | digraph
+// - ID: String
+// - statements: List DotStatement
+
+export type Graph
+  = Graph(Boolean, DotGraphMode, String, List GraphAttribute, List Node, List Edge, List Subgraph)
