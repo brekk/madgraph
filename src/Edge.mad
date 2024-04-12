@@ -1,0 +1,98 @@
+import type { Color } from "@/Color"
+import type { Layer, Point, Port, Splines } from "@/Shared"
+
+
+
+export type EDirection = EForward | EBack | EBoth | ENone
+
+
+// https://graphviz.org/doc/info/arrows.html
+export type Arrowhead
+  = ArrowBox
+  | ArrowCrow
+  | ArrowCurve
+  | ArrowDiamond
+  | ArrowDot
+  | ArrowIcurve
+  | ArrowInv
+  | ArrowNone
+  | ArrowNormal
+  | ArrowTee
+  | ArrowVee
+
+export type ArrowSide = AClipLeft | AClipRight | NoSide
+
+// open - Boolean
+// side - ArrowSide
+// shape - Arrowhead
+export type ArrowShape = ArrowShape(Boolean, ArrowSide, Arrowhead)
+
+export type Arrow = Arrow(List ArrowShape)
+
+export type EdgePosition = EdgePoint(Point) | EdgeSpline(Splines)
+export type EdgeStyle = EdgeDashed | EdgeDotted | EdgeSolid | EdgeInvisible | EdgeBold | EdgeTapered
+
+export type EdgeAttribute
+  = EAArrowHead(Arrow)
+  | EAArrowSize(Float)
+  | EAArrowTail(Arrow)
+  | EAClass(String)
+  | EAColor(Color)
+  | EAColorScheme(String)
+  | EAComment(String)
+  | EAConstraint(Boolean)
+  | EADecorate(Boolean)
+  | EADir(EDirection)
+  | EAEdgeTarget(String)
+  | EAEdgeTooltip(String)
+  | EAEdgeURL(String)
+  | EAFillColor(Color)
+  | EAFontColor(Color)
+  | EAFontName(String)
+  | EAFontSize(Integer)
+  | EAHeadLP(Point)
+  | EAHeadClip(Boolean)
+  | EAHeadLabel(String)
+  | EAHeadPort(Port)
+  | EAHeadTarget(String)
+  | EAHeadTooltip(String)
+  | EAHeadURL(String)
+  | EAId(String)
+  | EALabel(String)
+  | EALabelAngle(Float)
+  | EALabelDistance(Float)
+  | EALabelFloating(Boolean)
+  | EALabelFontColor(Color)
+  | EALabelFontName(String)
+  | EALabelFontSize(Integer)
+  | EALabelTarget(String)
+  | EALabelTooltip(String)
+  | EALabelURL(String)
+  | EALayer(Layer)
+  | EALen(Float)
+  | EALHead(String)
+  | EALp(Point)
+  | EALTail(String)
+  | EAMinlen(Integer)
+  | EANojustify(Boolean)
+  | EAPenWidth(Float)
+  | EAPos(EdgePosition)
+  | EASamehead(String)
+  | EASametail(String)
+  | EAShowBoxes(Boolean)
+  | EAStyle(EdgeStyle)
+  | EATailLP(Point)
+  | EATailClip(Boolean)
+  | EATailLabel(String)
+  | EATailPort(Port)
+  | EATailTarget(String)
+  | EATailTooltip(String)
+  | EATailURL(String)
+  | EATarget(String)
+  | EATooltip(String)
+  | EAURL(String)
+  | EAWeight(Float)
+  | EAXLabel(String)
+  | EAXlp(Point)
+
+export type Edge = Edge(String, List EdgeAttribute)

@@ -1,0 +1,40 @@
+import type { Color } from "@/Color"
+import type { Justification, LabelLoc, Layer, Point, Rect } from "@/Shared"
+
+
+
+export type ClusterStyle = ClusterFilled | ClusterStriped | ClusterRounded
+
+export type ClusterAttribute
+  = CAArea(Float)
+  | CABoundingBox(Rect)
+  | CABgColor(Color)
+  | CAClass(String)
+  | CACluster(Boolean)
+  | CAColor(Color)
+  | CAColorScheme(String)
+  | CAFillColor(Color)
+  | CAFontColor(Color)
+  | CAFontName(String)
+  | CAFontSize(Integer)
+  | CAGradientAngle(Integer)
+  | CAHref(String)
+  | CAId(String)
+  | CAK(Float)
+  | CALabel(String)
+  | CALabelJust(Justification)
+  | CALabelLoc(LabelLoc)
+  | CALayer(Layer)
+  | CALHeight(Float)
+  | CALp(Point)
+  | CALwidth(Float)
+  | CAMargin(Float, Float)
+  | CANojustify(Boolean)
+  | CAPenColor(Color)
+  | CAPenWidth(Float)
+  | CAPeripheries(Integer)
+  | CASortv(Integer)
+  | CAStyle(ClusterStyle)
+  | CATarget(String)
+  | CATooltip(String)
+  | CAUrl(String)

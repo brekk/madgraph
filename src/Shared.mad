@@ -1,0 +1,107 @@
+export type Layer = LayerAll | Layer(String) | LayerPort(String, String) | LayerList(Layer)
+
+export type Shape
+  = ShapeBox
+  | ShapePolygon
+  | ShapeEllipse
+  | ShapeOval
+  | ShapeCircle
+  | ShapePoint
+  | ShapeEgg
+  | ShapeTriangle
+  | ShapePlaintext
+  | ShapePlain
+  | ShapeDiamond
+  | ShapeTrapezium
+  | ShapeParallelogram
+  | ShapeHouse
+  | ShapePentagon
+  | ShapeHexagon
+  | ShapeSeptagon
+  | ShapeOctagon
+  | ShapeDoublecircle
+  | ShapeDoubleoctagon
+  | ShapeTripleoctagon
+  | ShapeInvtriangle
+  | ShapeInvtrapezium
+  | ShapeInvhouse
+  | ShapeMdiamond
+  | ShapeMsquare
+  | ShapeMcircle
+  | ShapeRect
+  | ShapeRectangle
+  | ShapeSquare
+  | ShapeStar
+  | ShapeNone
+  | ShapeUnderline
+  | ShapeCylinder
+  | ShapeNote
+  | ShapeTab
+  | ShapeFolder
+  | ShapeBox3d
+  | ShapeComponent
+  | ShapePromoter
+  | ShapeCds
+  | ShapeTerminator
+  | ShapeUtr
+  | ShapePrimersite
+  | ShapeRestrictionsite
+  | ShapeFivepoverhang
+  | ShapeThreepoverhang
+  | ShapeNoverhang
+  | ShapeAssembly
+  | ShapeSignature
+  | ShapeInsulator
+  | ShapeRibosite
+  | ShapeRnastab
+  | ShapeProteasesite
+  | ShapeProteinstab
+  | ShapeRpromoter
+  | ShapeRarrow
+  | ShapeLarrow
+  | ShapeLpromoter
+
+export type FixedSize = FixedSizeBoolean(Boolean) | FixedSizeShape(Shape)
+
+export type LabelLoc = LabelLocTop | LabelLocCentered | LabelLocBottom
+
+
+export type NodeStyle
+  = NodeDashed
+  | NodeDotted
+  | NodeSolid
+  | NodeInvisible
+  | NodeBold
+  | NodeFilled
+  | NodeWedged
+  | NodeDiagonal
+  | NodeRounded
+
+export type Point = Point(Float, Float, Boolean)
+
+export type Rect = Rect(Point, Point)
+
+export type Splines
+  = SplinesLine
+  | SplinesSpline
+  | SplinesPolyline
+  | SplinesOrtho
+  | SplinesCurved
+  | SplinesNone
+
+// https://graphviz.org/docs/attr-types/portPos/ 
+export type Compass
+  = CompassN
+  | CompassNE
+  | CompassE
+  | CompassSE
+  | CompassS
+  | CompassSW
+  | CompassW
+  | CompassNW
+  | CompassC
+  | CompassGap
+
+export type Port = Port(String, Compass)
+
+export type Justification = JLeft | JCentered | JRight

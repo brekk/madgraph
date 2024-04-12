@@ -1,0 +1,62 @@
+import type { Color } from "@/Color"
+import type { FixedSize, LabelLoc, Layer, NodeStyle, Point, Shape } from "@/Shared"
+
+
+
+export type ImageScale
+  = ImageScaleFalse
+  | ImageScaleTrue
+  | ImageScaleWidth
+  | ImageScaleHeight
+  | ImageScaleBoth
+
+export type ImagePos
+  = IPTopLeft
+  | IPTopCentered
+  | IPTopRight
+  | IPMiddleLeft
+  | IPMiddleCentered
+  | IPMiddleRight
+  | IPBottomLeft
+  | IPBottomCentered
+  | IPBottomRight
+
+export type NodeAttribute
+  = NAClass(String)
+  | NAColor(Color)
+  | NAColorScheme(String)
+  | NAComment(String)
+  | NADistortion(Float)
+  | NAFillColor(Color)
+  | NAFixedSize(FixedSize)
+  | NAFontColor(Color)
+  | NAFontName(String)
+  | NAFontSize(Integer)
+  | NAGradientAngle(Integer)
+  | NAGroup(String)
+  | NAHeight(Float)
+  | NAHref(String)
+  | NAImage(String)
+  | NAImagePos(ImagePos)
+  | NAImageScale(ImageScale)
+  | NALabel(String)
+  | NALabelLoc(LabelLoc)
+  | NALayer(Layer)
+  | NAMargin(Float, Float)
+  | NANoJustify(Boolean)
+  | NAShape(Shape)
+  | NAShapeFile(String)
+  | NAShowBoxes(Integer)
+  | NASides(Integer)
+  | NASkew(Float)
+  | NASortV(Integer)
+  | NAStyle(NodeStyle)
+  | NATarget(String)
+  | NATooltip(String)
+  | NAUrl(String)
+  | NAVertices(List Point)
+  | NAWidth(Float)
+  | NAXLabel(String)
+  | NAExteriorLabelPosition(Point)
+
+export type Node = Node(String, List NodeAttribute)

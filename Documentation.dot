@@ -1,0 +1,101 @@
+digraph {
+    rankdir=LR;
+    ranksep=2.5;
+    subgraph cluster_0 {
+        label="Shared";
+        Layer; Shape; FixedSize; LabelLoc; Point; Rect; Splines; Compass; Port; NodeStyle; Justification;
+        Compass -> Port;
+        Point -> Rect;
+    }
+
+    subgraph cluster_1 {
+        rank=0;
+        label="Color";
+        Color; X11Color; SVGColor;
+        { SVGColor X11Color } -> Color;
+    }
+    
+    subgraph cluster_2 {
+        label="Edge";
+        EDirection; Arrowhead; ArrowSide; ArrowShape; Arrow; EdgePosition; EdgeStyle; EdgeAttribute; "Edge";
+        ArrowShape -> Arrow;
+        { ArrowSide Arrowhead } -> ArrowShape;
+        { Arrow EDirection EdgePosition EdgeStyle } -> EdgeAttribute;
+        EdgeAttribute -> "Edge";
+    }
+    subgraph cluster_3 {
+        label="Node";
+        "Node"; NodeAttribute; ImageScale; ImagePos;
+        { ImageScale ImagePos } -> NodeAttribute;
+        NodeAttribute -> "Node";
+    }
+    subgraph cluster_4 {
+        label="Cluster";
+        ClusterStyle; ClusterAttribute;
+        {
+            Justification
+            LabelLoc
+            Layer
+            ClusterStyle
+        } -> ClusterAttribute;
+    }
+    
+    subgraph cluster_5 {
+        label="Graph";
+        "Graph"; DotGraphMode; Layout; GraphClusterRank; GraphOrdering; GraphOrientation; RankType; RankDir; GraphRatio; GraphSize; LabelScheme; NeatoMode; SFDPMode; GraphMode; NeatoModel; OutputMode; Overlap; PackModeFlag; PackMode; GraphPad; PageDir; QuadType; Root; Scale; SmoothType; StartType; GraphAttribute; ClusterAttribute;
+        PackModeFlag -> PackMode;
+        {
+            PackMode
+            GraphClusterRank
+            GraphOrdering
+            GraphOrientation
+            GraphRatio
+            Justification
+            LabelScheme
+            Layout
+            NeatoModel
+            OutputMode
+            QuadType
+            RankDir
+            RankType
+            Sep
+            Root
+            Scale
+            StartType
+            GraphSize
+            Overlap
+            GraphMode
+            SmoothType
+            GraphClusterRank
+            PageDir
+        } -> GraphAttribute;
+        {
+          NeatoMode
+          SFDPMode
+        } -> GraphMode;
+        {
+            DotGraphMode
+            GraphAttribute
+            "Subgraph"
+        } -> "Graph";
+        
+    }
+    ClusterAttribute -> "Subgraph";
+    {"Edge" "Node"} -> "Graph";
+    Color -> { ClusterAttribute EdgeAttribute GraphAttribute };
+    {Shape FixedSize} -> NodeAttribute;
+    LabelLoc -> { GraphAttribute NodeAttribute};
+    NodeStyle -> { ClusterAttribute GraphAttribute NodeAttribute};
+    Point -> {
+     ClusterAttribute
+     EdgeAttribute
+     GraphPad
+     GraphSize
+     NodeAttribute
+     Scale
+     Sep
+    }
+    Port -> { EdgeAttribute EdgePosition };
+    Rect -> { ClusterAttribute GraphAttribute };
+    Splines -> { EdgePosition GraphAttribute };
+}
