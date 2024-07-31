@@ -1,0 +1,92 @@
+import { Left, Right } from "Either"
+import File from "File"
+import { always } from "Function"
+import IO from "IO"
+import String from "String"
+import Term from "Terminal"
+import Test from "Test"
+import Wish from "Wish"
+
+import Parse from "@/Parsimony"
+
+
+
+TestError = Test.Error
+
+
+testParser :: (Show a, Eq a) => Parse.Parser a -> String -> a -> Wish Test.AssertionError {}
+export testParser = (parser, toParse, expected) => pipe(
+  Parse.runParser(parser),
+  where {
+    Left(Parse.Error(Parse.Loc(a, b, c))) =>
+      do {
+        before = String.slice(0, a, toParse)
+        after = String.slice(a, String.length(toParse), toParse)
+        parseError = `Parsing error: (${show(a)} ${show(b)} ${show(c)})
+██████████████████████
+◤${before}◥
+██████████████████████
+◣${after}◢
+██████████████████████`
+        IO.putLine(parseError)
+        return Wish.bad(TestError(parseError))
+      }
+
+    Right(res) =>
+      Test.assertEquals(res, expected)
+  },
+)(toParse)
+
+parseTest :: (Show a, Eq a) => String
+  -> Parse.Parser a
+  -> String
+  -> a
+  -> Wish Test.TestResult Test.TestResult
+export parseTest = (testName, parser, toParse, expected) => Test.test(
+  testName,
+  () => testParser(parser, toParse, expected),
+)
+
+printReport = (name, i) => `${name}\n  ↳ ${
+  pipe(
+    show,
+    Term.ansiColor([Term.ansi.FormatBold, Term.ansi.FGBrightYellow]),
+  )(i)
+}`
+
+createTest = (name, fn, i, o) => Test.test(printReport(name, i), () => Test.assertEquals(fn(i), o))
+
+export report = (fn, name, listInOut) => pipe(
+  map(where { #[i, o] => createTest(name, fn, i, o) }),
+)(listInOut)
+caseN2 :: (a -> b -> c) -> #[a, b] -> c
+export caseN2 = (fn, pair) => where(pair) {
+  #[a, b] =>
+    fn(a, b)
+}
+caseN3 :: (a -> b -> c -> d) -> #[a, b, c] -> d
+export caseN3 = (fn, t3) => where(t3) {
+  #[a, b, c] =>
+    fn(a, b, c)
+}
+caseN4 :: (a -> b -> c -> d -> e) -> #[a, b, c, d] -> e
+export caseN4 = (fn, t4) => where(t4) {
+  #[a, b, c, d] =>
+    fn(a, b, c, d)
+}
+caseN5 :: (a -> b -> c -> d -> e -> f) -> #[a, b, c, d, e] -> f
+export caseN5 = (fn, t5) => where(t5) {
+  #[a, b, c, d, e] =>
+    fn(a, b, c, d, e)
+}
+templateChainTest = (name, fn, i, o) => Test.test(
+  printReport(name, i),
+  () => pipe(
+    fn,
+    chain(Test.assertEquals(o)),
+  )(i),
+)
+
+export asyncReport = (fn, name, listInOut) => pipe(
+  map(where { #[i, o] => templateChainTest(name, fn, i, o) }),
+)(listInOut)

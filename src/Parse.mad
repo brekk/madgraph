@@ -1,0 +1,54 @@
+import type { Either } from "Either"
+import type { Maybe } from "Maybe"
+
+import { apL } from "Applicative"
+import { mapLeft } from "Either"
+import { always, equals, identity } from "Function"
+import { mapL } from "Functor"
+import IO from "IO"
+import { dropWhile, mapMaybe } from "List"
+import { Just, Nothing } from "Maybe"
+import String from "String"
+
+import P from "@/Parsimony"
+
+
+
+// simple to start is better than nothing forever
+export type DotPart = Node(String) | Link(String, String)
+export alias DotList = List DotPart
+export type Graph = Digraph(String, List DotPart)
+
+ARROW = P.string("->")
+SEMICOLON = P.string(";")
+NEWLINE = P.string("\n")
+LINE_END = P.choice([SEMICOLON, NEWLINE])
+
+stringTill = pipe(
+  P.someTill(P.anyChar),
+  map(
+    pipe(
+      String.fromList,
+      String.trim,
+    ),
+  ),
+)
+
+link :: P.Parser DotPart
+export link = do {
+  a <- stringTill(ARROW)
+  _ <- ARROW
+  b <- stringTill(LINE_END)
+  _ <- LINE_END
+  return of(Link(a, b))
+}
+
+digraph :: P.Parser Graph
+export digraph = do {
+  _ <- P.choice([P.symbol("digraph"), P.symbol("Digraph")])
+  name <- stringTill(P.char('{'))
+  _ <- P.char('{')
+  body <- P.token(P.someTill(link, P.char('}')))
+  _ <- P.char('}')
+  return of(Digraph(name, body))
+}

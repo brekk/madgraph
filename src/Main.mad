@@ -1,7 +1,5 @@
-import IO from "IO"
+import P from "@/Parse"
 
 
 
-main = () => {
-  IO.putLine("Hello World!")
-}
+main = () => {}
