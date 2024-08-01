@@ -15,7 +15,7 @@ import P from "@/Parsimony"
 
 
 // simple to start is better than nothing forever
-export type DotPart = Node(String) | Link(String, String)
+export type DotPart = Node(String) | LinkedNode(String, String)
 export alias DotList = List DotPart
 export type Graph = Digraph(String, List DotPart)
 
@@ -34,21 +34,31 @@ stringTill = pipe(
   ),
 )
 
-link :: P.Parser DotPart
-export link = do {
+linkedNode :: P.Parser DotPart
+export linkedNode = do {
   a <- stringTill(ARROW)
   _ <- ARROW
   b <- stringTill(LINE_END)
   _ <- LINE_END
-  return of(Link(a, b))
+  return of(LinkedNode(a, b))
 }
+
+node :: P.Parser DotPart
+export node = do {
+  a <- stringTill(LINE_END)
+  _ <- LINE_END
+  return of(Node(a))
+}
+
+nodule :: P.Parser DotPart
+nodule = P.choice([linkedNode, node])
 
 digraph :: P.Parser Graph
 export digraph = do {
   _ <- P.choice([P.symbol("digraph"), P.symbol("Digraph")])
   name <- stringTill(P.char('{'))
   _ <- P.char('{')
-  body <- P.token(P.someTill(link, P.char('}')))
+  body <- P.token(P.someTill(nodule, P.char('}')))
   _ <- P.char('}')
   return of(Digraph(name, body))
 }
