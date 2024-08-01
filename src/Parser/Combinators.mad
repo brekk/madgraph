@@ -1,0 +1,30 @@
+import type { Parser } from "@/Parsimony"
+
+import { apL } from "Applicative"
+import { identity } from "Function"
+import { mapL } from "Functor"
+import { fromList, trim } from "String"
+
+import { anyChar, someTill } from "@/Parsimony"
+
+
+
+// ▚▚▚ COMBINATORS ▚▚▚
+
+stringTill :: Parser a -> Parser String
+export stringTill = pipe(
+  someTill(anyChar),
+  map(
+    pipe(
+      fromList,
+      trim,
+    ),
+  ),
+)
+
+between :: Parser a -> Parser b -> Parser c -> Parser b
+export between = (a, mid, z) => pipe(
+  mapL(identity),
+  ap($, mid),
+  apL($, z),
+)(a)

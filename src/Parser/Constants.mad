@@ -1,0 +1,11 @@
+import { char, choice, string } from "@/Parsimony"
+
+
+
+// ▚▚▚ PARSER CONSTANTS ▚▚▚
+
+export ARROW = string("->")
+export SEMICOLON = string(";")
+export NEWLINE = string("\n")
+export LINE_END = choice([SEMICOLON, NEWLINE])
+export QUOTES = choice([char('\''), char('"')])

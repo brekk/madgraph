@@ -10,48 +10,53 @@ import { dropWhile, mapMaybe } from "List"
 import { Just, Nothing } from "Maybe"
 import String from "String"
 
+import { stringTill } from "@/Parser/Combinators"
+import { ARROW, LINE_END } from "@/Parser/Constants"
 import P from "@/Parsimony"
 
 
 
 // simple to start is better than nothing forever
-export type DotPart = Node(String) | LinkedNode(String, String)
+export type Attribute = Attribute(String, String)
+export type DotPart = Node(String, List Attribute) | Link(String, String)
 export alias DotList = List DotPart
 export type Graph = Digraph(String, List DotPart)
 
-ARROW = P.string("->")
-SEMICOLON = P.string(";")
-NEWLINE = P.string("\n")
-LINE_END = P.choice([SEMICOLON, NEWLINE])
-
-stringTill = pipe(
-  P.someTill(P.anyChar),
-  map(
-    pipe(
-      String.fromList,
-      String.trim,
-    ),
-  ),
-)
-
-linkedNode :: P.Parser DotPart
-export linkedNode = do {
+link :: P.Parser DotPart
+export link = do {
   a <- stringTill(ARROW)
   _ <- ARROW
   b <- stringTill(LINE_END)
   _ <- LINE_END
-  return of(LinkedNode(a, b))
+  return of(Link(a, b))
 }
 
 node :: P.Parser DotPart
 export node = do {
   a <- stringTill(LINE_END)
   _ <- LINE_END
-  return of(Node(a))
+  return of(Node(a, []))
+}
+
+attr :: P.Parser Attribute
+export attr = do {
+  key <- stringTill(P.char('='))
+  _ <- P.char('=')
+  value <- map(String.fromList, P.letters)
+  return of(Attribute(key, value))
+}
+
+nodeWithAttributes :: P.Parser DotPart
+export nodeWithAttributes = do {
+  a <- stringTill(P.char('['))
+  _ <- P.char('[')
+  attrs <- P.maybeSepBy(attr, P.choice([P.char(' '), P.char(',')]))
+  _ <- P.char(']')
+  return of(Node(a, attrs))
 }
 
 nodule :: P.Parser DotPart
-nodule = P.choice([linkedNode, node])
+export nodule = P.choice([link, nodeWithAttributes, node])
 
 digraph :: P.Parser Graph
 export digraph = do {

@@ -1,0 +1,93 @@
+import { Left, Right } from "Either"
+import File from "File"
+import { always } from "Function"
+import IO from "IO"
+import Test from "Test"
+import Wish from "Wish"
+
+import { Attribute, Digraph, Link, Node, digraph, link } from "@/Parser"
+import P from "@/Parsimony"
+import { parseTest, report, testParser } from "@/Test"
+
+
+
+assertEquals = Test.assertEquals
+test = Test.test
+TestError = Test.Error
+
+parseTest("link - semicolon", link, "yo -> hey;", Link("yo", "hey"))
+parseTest("link - nosemicolon", link, "yo -> hey\n", Link("yo", "hey"))
+parseTest(
+  "digraph - basic inline",
+  digraph,
+  `digraph G { root -> branch; branch -> branch2; branch2 -> branch3; }`,
+  Digraph("G", [Link("root", "branch"), Link("branch", "branch2"), Link("branch2", "branch3")]),
+)
+parseTest(
+  "digraph - simple with semicolons",
+  digraph,
+  `Digraph myCoolGraph {
+  root -> branch;
+  branch -> leaf1;
+  branch -> leaf2;
+  root -> leaf3;
+  hey;
+}`,
+  Digraph(
+    "myCoolGraph",
+    [
+      Link("root", "branch"),
+      Link("branch", "leaf1"),
+      Link("branch", "leaf2"),
+      Link("root", "leaf3"),
+      Node("hey", []),
+    ],
+  ),
+)
+
+parseTest(
+  "digraph - simple sans semicolons",
+  digraph,
+  `digraph dogs {
+  dog -> mastiff
+  mastiff -> english
+  mastiff -> neopolitan
+  dog -> akita
+  wolf
+}`,
+  Digraph(
+    "dogs",
+    [
+      Link("dog", "mastiff"),
+      Link("mastiff", "english"),
+      Link("mastiff", "neopolitan"),
+      Link("dog", "akita"),
+      Node("wolf", []),
+    ],
+  ),
+)
+
+
+parseTest(
+  "digraph - simple with attributes",
+  digraph,
+  `digraph dogs {
+  dog -> mastiff
+  mastiff -> english
+  mastiff -> neopolitan;
+  dog -> akita;
+  wolf [shape=Msquare, color=yellow]
+  dog [shape=square color=red]
+}`,
+  Digraph(
+    "dogs",
+    [
+      Link("dog", "mastiff"),
+      Link("mastiff", "english"),
+      Link("mastiff", "neopolitan"),
+      Link("dog", "akita"),
+      Node("wolf", [Attribute("shape", "Msquare"), Attribute("color", "yellow")]),
+      Node("dog", [Attribute("shape", "square"), Attribute("color", "red")]),
+    ],
+  ),
+)
