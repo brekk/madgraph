@@ -1,3 +1,4 @@
+import { always } from "Function"
 import String from "String"
 
 import { between, stringTill } from "@/Parser/Combinators"
@@ -33,23 +34,34 @@ export node = do {
   return of(Node(a, []))
 }
 
-attr :: P.Parser Attribute
-export attr = do {
-  key <- stringTill(P.char('='))
-  _ <- P.char('=')
-  value <- map(String.fromList, P.letters)
-  return of(Attribute(key, value))
+stringChar :: P.Parser Char
+stringChar = P.choice([
+  map(always('"'), P.string("\\\"")),
+  map(always('\n'), P.string("\\n")),
+  map(always('\t'), P.string("\\t")),
+  P.notChar('"'),
+])
+
+
+string :: P.Parser (List Char)
+export string = do {
+  _ <- P.char('"')
+  cs <- P.many(stringChar)
+  _ <- P.symbol(`"`)
+
+  return pipe(
+    // String.fromList,
+    of,
+  )(cs)
 }
 
-quotedAttr :: P.Parser Attribute
-export quotedAttr = do {
+attribute :: P.Parser Attribute
+export attribute = do {
   key <- stringTill(P.char('='))
   _ <- P.char('=')
-  value <- map(String.fromList, wrapped(P.string("\""), P.many(P.anyChar)))
+  value <- map(String.fromList, P.choice([string, P.letters]))
   return of(Attribute(key, value))
 }
-
-attribute = P.choice([quotedAttr, attr])
 
 nodeWithAttributes :: P.Parser DotPart
 export nodeWithAttributes = do {

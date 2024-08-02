@@ -100,7 +100,7 @@ parseTest(
   mastiff -> neopolitan;
   dog -> akita;
   wolf [shape=Msquare, color="yellow"]
-  dog [shape=square color=red]
+  dog [shape=square color="red"]
 }`,
   Digraph(
     "dogs",

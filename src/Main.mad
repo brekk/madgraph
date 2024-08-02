@@ -1,5 +1,9 @@
-import P from "@/Parse"
+// import P from "@/Parse"
+import Renderer from "@/Renderer"
 
 
 
-main = () => {}
+main = () => {
+  // Renderer.exec([
+  // ])
+}
