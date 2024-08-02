@@ -1,20 +1,15 @@
-import type { Either } from "Either"
-import type { Maybe } from "Maybe"
-
-import { apL } from "Applicative"
-import { mapLeft } from "Either"
-import { always, equals, identity } from "Function"
-import { mapL } from "Functor"
-import IO from "IO"
-import { dropWhile, mapMaybe } from "List"
-import { Just, Nothing } from "Maybe"
 import String from "String"
 
-import { stringTill } from "@/Parser/Combinators"
-import { ARROW, LINE_END } from "@/Parser/Constants"
+import { between, stringTill } from "@/Parser/Combinators"
+import { ARROW, LINE_END, QUOTES } from "@/Parser/Constants"
 import P from "@/Parsimony"
 
 
+
+// ▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚
+
+export stringified = between(QUOTES, $, QUOTES)
+export wrapped = (a, x) => between(a, x, a)
 
 // simple to start is better than nothing forever
 export type Attribute = Attribute(String, String)
@@ -46,11 +41,21 @@ export attr = do {
   return of(Attribute(key, value))
 }
 
+quotedAttr :: P.Parser Attribute
+export quotedAttr = do {
+  key <- stringTill(P.char('='))
+  _ <- P.char('=')
+  value <- map(String.fromList, wrapped(P.string("\""), P.many(P.anyChar)))
+  return of(Attribute(key, value))
+}
+
+attribute = P.choice([quotedAttr, attr])
+
 nodeWithAttributes :: P.Parser DotPart
 export nodeWithAttributes = do {
   a <- stringTill(P.char('['))
   _ <- P.char('[')
-  attrs <- P.maybeSepBy(attr, P.choice([P.char(' '), P.char(',')]))
+  attrs <- P.maybeSepBy(attribute, P.choice([P.char(' '), P.char(',')]))
   _ <- P.char(']')
   return of(Node(a, attrs))
 }

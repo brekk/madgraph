@@ -1,6 +1,9 @@
-Digraph G {
-  root -> branch;
-  branch -> leaf1;
-  branch -> leaf2;
-  root -> leaf3;
+ digraph dogs {
+  dog -> mastiff
+  mastiff -> english
+  mastiff -> neopolitan
+  dog -> akita
+  wolf [shape=Msquare]
+  dog [shape=square color=red]
 }
+

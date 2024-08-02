@@ -67,7 +67,6 @@ parseTest(
   ),
 )
 
-
 parseTest(
   "digraph - simple with attributes",
   digraph,
@@ -77,6 +76,30 @@ parseTest(
   mastiff -> neopolitan;
   dog -> akita;
   wolf [shape=Msquare, color=yellow]
+  dog [shape=square color=red]
+}`,
+  Digraph(
+    "dogs",
+    [
+      Link("dog", "mastiff"),
+      Link("mastiff", "english"),
+      Link("mastiff", "neopolitan"),
+      Link("dog", "akita"),
+      Node("wolf", [Attribute("shape", "Msquare"), Attribute("color", "yellow")]),
+      Node("dog", [Attribute("shape", "square"), Attribute("color", "red")]),
+    ],
+  ),
+)
+
+parseTest(
+  "digraph - simple with quoted attributes",
+  digraph,
+  `digraph dogs {
+  dog -> mastiff
+  mastiff -> english
+  mastiff -> neopolitan;
+  dog -> akita;
+  wolf [shape=Msquare, color="yellow"]
   dog [shape=square color=red]
 }`,
   Digraph(
