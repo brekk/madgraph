@@ -2,21 +2,32 @@ import { always } from "Function"
 import String from "String"
 
 import { between, stringTill } from "@/Parser/Combinators"
-import { ARROW, LINE_END, QUOTES } from "@/Parser/Constants"
+import { ARROW, LINE_END, NEWLINE, QUOTES } from "@/Parser/Constants"
 import P from "@/Parsimony"
 
 
 
 // ▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚▚
 
-export stringified = between(QUOTES, $, QUOTES)
-export wrapped = (a, x) => between(a, x, a)
 
 // simple to start is better than nothing forever
 export type Attribute = Attribute(String, String)
-export type DotPart = Node(String, List Attribute) | Link(String, String)
+export type Comment = Comment(List String)
+export type DotPart = Node(String, List Attribute) | Link(String, String) | GraphComment(Comment)
 export alias DotList = List DotPart
-export type Graph = Digraph(String, List DotPart)
+export type DotLang = Digraph(String, List DotPart) | LangComment(Comment)
+export alias Dot = List DotLang
+
+singleLineComment :: P.Parser Comment
+export singleLineComment = do {
+  _ <- P.string("//")
+  v <- stringTill(NEWLINE)
+  return pipe(
+    of,
+    Comment,
+    of,
+  )(v)
+}
 
 link :: P.Parser DotPart
 export link = do {
@@ -47,12 +58,9 @@ string :: P.Parser (List Char)
 export string = do {
   _ <- P.char('"')
   cs <- P.many(stringChar)
-  _ <- P.symbol(`"`)
+  _ <- P.char('"')
 
-  return pipe(
-    // String.fromList,
-    of,
-  )(cs)
+  return of(cs)
 }
 
 attribute :: P.Parser Attribute
@@ -63,19 +71,28 @@ export attribute = do {
   return of(Attribute(key, value))
 }
 
+
 nodeWithAttributes :: P.Parser DotPart
 export nodeWithAttributes = do {
   a <- stringTill(P.char('['))
   _ <- P.char('[')
-  attrs <- P.maybeSepBy(attribute, P.choice([P.char(' '), P.char(',')]))
+  attrs <- P.maybeSepBy(attribute, P.choice([P.char(','), P.char(' ')]))
   _ <- P.char(']')
   return of(Node(a, attrs))
 }
 
-nodule :: P.Parser DotPart
-export nodule = P.choice([link, nodeWithAttributes, node])
+export comment = P.choice([singleLineComment])
 
-digraph :: P.Parser Graph
+graphComment :: P.Parser DotPart
+export graphComment = do {
+  x <- comment
+  return of(GraphComment(x))
+}
+
+nodule :: P.Parser DotPart
+export nodule = P.choice([graphComment, link, nodeWithAttributes, node])
+
+digraph :: P.Parser DotLang
 export digraph = do {
   _ <- P.choice([P.symbol("digraph"), P.symbol("Digraph")])
   name <- stringTill(P.char('{'))

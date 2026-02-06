@@ -5,7 +5,19 @@ import IO from "IO"
 import Test from "Test"
 import Wish from "Wish"
 
-import { Attribute, Digraph, Link, Node, digraph, link } from "@/Parser"
+import {
+  Attribute,
+  Comment,
+  Digraph,
+  GraphComment,
+  Link,
+  Node,
+  comment,
+  digraph,
+  graphComment,
+  link,
+  singleLineComment,
+} from "@/Parser"
 import P from "@/Parsimony"
 import { parseTest, report, testParser } from "@/Test"
 
@@ -14,7 +26,13 @@ import { parseTest, report, testParser } from "@/Test"
 assertEquals = Test.assertEquals
 test = Test.test
 TestError = Test.Error
-
+parseTest("comment", comment, "// this is a comment", Comment(["this is a comment"]))
+parseTest(
+  "graphComment",
+  graphComment,
+  "// this is a comment",
+  GraphComment(Comment(["this is a comment"])),
+)
 parseTest("link - semicolon", link, "yo -> hey;", Link("yo", "hey"))
 parseTest("link - nosemicolon", link, "yo -> hey\n", Link("yo", "hey"))
 parseTest(
@@ -23,6 +41,16 @@ parseTest(
   `digraph G { root -> branch; branch -> branch2; branch2 -> branch3; }`,
   Digraph("G", [Link("root", "branch"), Link("branch", "branch2"), Link("branch2", "branch3")]),
 )
+
+parseTest(
+  "graph comments",
+  digraph,
+  `digraph yo {
+// comment comment comment
+}`,
+  Digraph("yo", [GraphComment(Comment(["comment comment comment"]))]),
+)
+
 parseTest(
   "digraph - simple with semicolons",
   digraph,
@@ -99,8 +127,9 @@ parseTest(
   mastiff -> english
   mastiff -> neopolitan;
   dog -> akita;
-  wolf [shape=Msquare, color="yellow"]
-  dog [shape=square color="red"]
+  wolf [shape="Msquare", color="yellow"]
+  coyote [shape=Msquare, color="blue"]
+  dog [shape="square" color="red"]
 }`,
   Digraph(
     "dogs",
@@ -110,6 +139,7 @@ parseTest(
       Link("mastiff", "neopolitan"),
       Link("dog", "akita"),
       Node("wolf", [Attribute("shape", "Msquare"), Attribute("color", "yellow")]),
+      Node("coyote", [Attribute("shape", "Msquare"), Attribute("color", "blue")]),
       Node("dog", [Attribute("shape", "square"), Attribute("color", "red")]),
     ],
   ),

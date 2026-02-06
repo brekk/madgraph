@@ -1,11 +1,15 @@
+import type { Maybe } from "Maybe"
+
 import type { Parser } from "@/Parsimony"
 
 import { apL } from "Applicative"
 import { identity } from "Function"
 import { mapL } from "Functor"
-import { fromList, trim } from "String"
+import IO from "IO"
+import { Just, Nothing } from "Maybe"
+import { drop, firstChar, fromList, prependChar, trim } from "String"
 
-import { anyChar, someTill } from "@/Parsimony"
+import { anyChar, char, someTill } from "@/Parsimony"
 
 
 
@@ -28,3 +32,51 @@ export between = (a, mid, z) => pipe(
   ap($, mid),
   apL($, z),
 )(a)
+
+string :: String -> Parser String
+export string = (s) => {
+  IO.pTrace("STRING", s)
+  return where(firstChar(s)) {
+    Just(c) =>
+      pipe(
+        IO.pTrace("c"),
+        char,
+        map(
+          (a, b) => pipe(
+            IO.pTrace("b"),
+            (x) => prependChar(IO.pTrace("___", a), x),
+            IO.pTrace("a + b"),
+          )(b),
+        ),
+        ap($, string(drop(1, s))),
+      )(c)
+
+    Nothing =>
+      pure("")
+  }
+}
+/*
+*/
+
+tail :: String -> String
+tail = drop(1)
+
+startsWith :: String -> String -> Parser String
+export startsWith = (prefix, s) => {
+  IO.pTrace("PREFIX", prefix)
+  return where(firstChar(s)) {
+    Just(c) =>
+      pipe(
+        map(
+          (a, b) => {
+            IO.pTrace("...", { a, b, s, prefix })
+            return prependChar(a, b)
+          },
+        ),
+        ap($, startsWith(tail(prefix), tail(s))),
+      )(char(c))
+
+    Nothing =>
+      pure("")
+  }
+}

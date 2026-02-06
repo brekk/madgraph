@@ -1,0 +1,23 @@
+import type { Parser } from "@/Parsimony"
+
+import { between, startsWith, string } from "@/Parser/Combinators"
+import { parseTest } from "@/Test"
+
+
+
+type Wrap = Wrap(String)
+
+parsie :: String -> String -> Parser Wrap
+parsie = (pre, str) => do {
+  raw <- startsWith(pre, str)
+  return of(Wrap(raw))
+}
+
+parseAString :: Parser Wrap
+parseAString = do {
+  raw <- string("test")
+  return of(Wrap(raw))
+}
+
+// parseTest("stringstrangstartswith", parsie("//", "skibby"), "skibby", Wrap("dibby"))
+parseTest("parseAString", parseAString, "t1est", Wrap(""))
